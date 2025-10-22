@@ -1,0 +1,55 @@
+services:
+  app:
+    container_name: nv-orders-app
+    image: nv-orders-php
+    build:
+      context: .
+      dockerfile: Dockerfile
+    depends_on:
+      - mysql
+      - redis
+    volumes:
+      - ./:/var/www/html
+    environment:
+      APP_ENV: local
+      QUEUE_CONNECTION: redis
+      CACHE_DRIVER: redis
+      SESSION_DRIVER: redis
+      REDIS_HOST: redis
+      DB_HOST: mysql
+      DB_DATABASE: nv_orders
+      DB_USERNAME: root
+      DB_PASSWORD: root
+    command: sh -lc "php-fpm -D && /usr/bin/supervisord -n -c /etc/supervisor/supervisord.conf"
+    working_dir: /var/www/html
+
+  nginx:
+    container_name: nv-orders-nginx
+    image: nginx:alpine
+    depends_on:
+      - app
+    ports:
+      - '80:80'
+    volumes:
+      - ./:/var/www/html
+      - ./.docker/nginx/conf.d:/etc/nginx/conf.d
+
+  mysql:
+    container_name: nv-orders-mysql
+    image: mysql:8
+    ports:
+      - '3307:3306'
+    volumes:
+      - mysql_data:/var/lib/mysql
+    environment:
+      MYSQL_ROOT_PASSWORD: root
+      MYSQL_DATABASE: nv_orders
+
+  redis:
+    container_name: nv-orders-redis
+    image: redis:7
+    ports:
+      - '6379:6379'
+
+volumes:
+  mysql_data: null
