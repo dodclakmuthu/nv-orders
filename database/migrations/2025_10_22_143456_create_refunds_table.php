@@ -16,7 +16,7 @@ return new class extends Migration
             $table->foreignId('order_id')->constrained()->cascadeOnDelete();
             $table->decimal('amount', 12, 2);
             $table->enum('status', ['requested', 'processed', 'failed'])->default('requested');
-            $table->string('idempotency_key')->unique(); // ensures re-runs are no-ops
+            $table->string('idempotency_key')->unique(); 
             $table->timestamps();
         });
     }

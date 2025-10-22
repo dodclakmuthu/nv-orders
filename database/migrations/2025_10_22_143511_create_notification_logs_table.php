@@ -15,8 +15,8 @@ return new class extends Migration
             $table->id();
             $table->foreignId('order_id')->nullable()->constrained()->nullOnDelete();
             $table->foreignId('customer_id')->nullable()->constrained()->nullOnDelete();
-            $table->string('type'); // success|failure|refund
-            $table->json('payload'); // stores {order_id, customer_id, status, total}
+            $table->string('type');
+            $table->json('payload');
             $table->timestamp('sent_at')->nullable();
             $table->timestamps();
         });

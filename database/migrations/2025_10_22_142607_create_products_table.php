@@ -15,7 +15,7 @@ return new class extends Migration
             $table->id();
             $table->string('sku')->unique();
             $table->string('name');
-            $table->unsignedInteger('stock'); // simple integer stock
+            $table->unsignedInteger('stock');
             $table->unsignedInteger('reserved')->default(0);
             $table->unsignedInteger('sold')->default(0);
             $table->decimal('price', 12, 2);

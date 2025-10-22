@@ -14,12 +14,22 @@ return new class extends Migration
         Schema::create('orders', function (Blueprint $table) {
             $table->id();
             $table->foreignId('customer_id')->constrained()->cascadeOnDelete();
-            $table->enum('status', ['pending', 'reserved', 'paid', 'finalized', 'failed', 'rolled_back'])->default('pending');
+            $table->string('order_number')->index();  
+            $table->uuid('import_batch')->nullable()->index(); 
+            $table->date('order_date');
+            $table->enum('status', [
+                'pending',
+                'reserved',
+                'paid',
+                'finalized',
+                'failed',
+                'rolled_back'
+            ])->default('pending');
             $table->decimal('subtotal', 12, 2)->default(0);
             $table->decimal('total', 12, 2)->default(0);
-            $table->date('order_date'); // from CSV
-            $table->uuid('import_batch')->nullable();
             $table->timestamps();
+
+            $table->unique(['order_number', 'import_batch']); // ensures idempotency
         });
     }
 
